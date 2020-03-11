@@ -8,7 +8,7 @@ var BlenoCharacteristic = bleno.Characteristic;
 var FileShareCharacteristic = function() {
  FileShareCharacteristic.super_.call(this, {
     uuid: '4ab6dea3-5256-47d5-b240-cee16ec4c3b9',
-    properties: ['read', 'write', 'notify'],
+    properties: ['read', 'write', 'indicate'],
     value: null
   });
 
@@ -45,7 +45,8 @@ FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withou
 	{
   }
   console.log(data.toString('ascii'));
-  sendFile();
+  //sendFile();
+  this._updateValueCallback(this._data);
   callback(this.RESULT_SUCCESS);
 };
 
@@ -63,24 +64,24 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
   this._updateValueCallback = null;
 };
 
-function sendFile(){
-  fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
-    if (err) {
-        throw err;
-    }
-    const content = data;
-    var offset = 0;
+// function sendFile(){
+//   fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
+//     if (err) {
+//         throw err;
+//     }
+//     const content = data;
+//     var offset = 0;
 
-    while(offset<data.length)
-    {
-      this._updateValueCallback(content.slice(offset,offset + bleno.mtu));
-      offset += bleno.mtu;
-    }
-    // Invoke the next step here however you like
-    //console.log(content);
-    this._updateValueCallback("DONE");   // Put all of the code here (not the best solution)
-  });
-};
+//     while(offset<data.length)
+//     {
+//       this._updateValueCallback(content.slice(offset,offset + bleno.mtu));
+//       offset += bleno.mtu;
+//     }
+//     // Invoke the next step here however you like
+//     //console.log(content);
+//     this._updateValueCallback("DONE");   // Put all of the code here (not the best solution)
+//   });
+// };
 
 util.inherits(FileShareCharacteristic, BlenoCharacteristic);
 module.exports = FileShareCharacteristic;
