@@ -41,11 +41,11 @@ FileShareCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
 FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
 {
-  	if(!offset)
+  if(!offset)
 	{
   }
-  
   console.log(data.toString('ascii'));
+  sendFile();
   callback(this.RESULT_SUCCESS);
 };
 
@@ -53,7 +53,7 @@ FileShareCharacteristic.prototype.onSubscribe = function(maxValueSize, updateVal
   console.log("FileShareCharacteristic - onSubscribe");
   console.log('Began sending File');
   this._updateValueCallback = updateValueCallback;
-  sendFile();
+  //sendFile();
 };
 
 
