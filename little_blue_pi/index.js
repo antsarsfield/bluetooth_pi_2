@@ -1,6 +1,7 @@
 var bleno = require('bleno');
 
 var SystemInformationService = require('./systeminformationservice');
+var FileService = require('./fileservice');
 
 var systemInformationService = new SystemInformationService();
 var fileService = new FileService();
