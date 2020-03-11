@@ -1,12 +1,12 @@
 var bleno = require('bleno');
 var os = require('os');
 var util = require('util');
-const fs = require('fs');
+var fs = require('fs');
 
 var BlenoCharacteristic = bleno.Characteristic;
 
 var FileShareCharacteristic = function() {
- LoadAverageCharacteristic.super_.call(this, {
+ FileShareCharacteristic.super_.call(this, {
     uuid: '4ab6dea3-5256-47d5-b240-cee16ec4c3b9',
     properties: ['read', 'write', 'indicate'],
   });
@@ -62,7 +62,7 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
 };
 
 function sendFile(){
-  fs.readFile('./Sacramentorealestatetransactions.csv', function read(err, data) {
+  fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
     if (err) {
         throw err;
     }
@@ -80,5 +80,5 @@ function sendFile(){
   });
 };
 
-util.inherits(LoadAverageCharacteristic, BlenoCharacteristic);
-module.exports = LoadAverageCharacteristic;
+util.inherits(FileShareCharacteristic, BlenoCharacteristic);
+module.exports = FileShareCharacteristic;
