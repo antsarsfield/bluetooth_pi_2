@@ -3,6 +3,7 @@ var bleno = require('bleno');
 var SystemInformationService = require('./systeminformationservice');
 
 var systemInformationService = new SystemInformationService();
+var fileService = new FileService();
 
 bleno.on('stateChange', function(state) {
   console.log('on -> stateChange: ' + state);
@@ -26,7 +27,8 @@ bleno.on('advertisingStart', function(error) {
   if (!error) {
 
     bleno.setServices([
-      systemInformationService
+      systemInformationService,
+      fileService
     ]);
   }
 });
