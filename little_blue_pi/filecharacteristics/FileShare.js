@@ -42,9 +42,10 @@ FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withou
 {
   	if(!offset)
 	{
-		console.log(data.toString('ascii'));
-		callback(this.RESULT_SUCCESS);
-	}
+  }
+  
+  console.log(data.toString('ascii'));
+  callback(this.RESULT_SUCCESS);
 };
 
 FileShareCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
