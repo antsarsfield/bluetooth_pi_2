@@ -8,7 +8,7 @@ var BlenoCharacteristic = bleno.Characteristic;
 var FileShareCharacteristic = function() {
  FileShareCharacteristic.super_.call(this, {
     uuid: '4ab6dea3-5256-47d5-b240-cee16ec4c3b9',
-    properties: ['read', 'write', 'indicate'],
+    properties: ['read', 'write', 'notify'],
   });
 
  this._value = new Buffer(0);
