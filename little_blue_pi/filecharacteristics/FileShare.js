@@ -8,13 +8,16 @@ var BlenoCharacteristic = bleno.Characteristic;
 var FileShareCharacteristic = function() {
  FileShareCharacteristic.super_.call(this, {
     uuid: '4ab6dea3-5256-47d5-b240-cee16ec4c3b9',
-    properties: ['read', 'write', 'indicate'],
+    properties: ['read', 'write', 'notify'],
     value: null
   });
 
  this._value = new Buffer(0);
  this._updateValueCallback = null;
 };
+
+var fs_offset =0;
+var file = null;
 
 FileShareCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
@@ -44,10 +47,30 @@ FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withou
   if(!offset)
 	{
   }
-  console.log(data.toString('ascii'));
-  //sendFile();
-  this._updateValueCallback(this._data);
-  callback(this.RESULT_SUCCESS);
+  var stringData = data.toString('ascii');
+  if(stringData == "CONTINUE")
+  {
+    if(fs_offset < file.length)
+    {
+      console.log(file.slice(fs_offset,fs_offset + bleno.mtu).toString());
+      this._updateValueCallback(file.slice(fs_offset,fs_offset + bleno.mtu));
+      fs_offset += bleno.mtu;
+      callback(this.RESULT_SUCCESS);
+    }
+    else{
+
+      this._updateValueCallback(new Buffer("DONE"));
+    }
+  }
+  else
+  {
+    setFile(stringData)
+    .then(function(){
+      callback(this.RESULT_SUCCESS);
+    }).catch(function(){
+      callback(this.RESULT_UNLIKELY_ERROR);
+    });
+  }
 };
 
 FileShareCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
@@ -63,6 +86,19 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
 
   this._updateValueCallback = null;
 };
+
+function setFile(){
+  return new Promise(function(resolve, reject){
+    fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
+      if (err) {
+          reject(err);
+      }
+      file = data;
+      console.log("Got file");
+      resolve("Got file");
+    });
+  });
+}
 
 // function sendFile(){
 //   fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
