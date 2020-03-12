@@ -52,10 +52,11 @@ FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withou
   {
     if(fs_offset < file.length)
     {
+      callback(this.RESULT_SUCCESS);
       console.log(file.slice(fs_offset,fs_offset + bleno.mtu).toString());
+      wait(100);
       this._updateValueCallback(file.slice(fs_offset,fs_offset + bleno.mtu));
       fs_offset += bleno.mtu;
-      callback(this.RESULT_SUCCESS);
     }
     else{
 
@@ -87,7 +88,7 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
   this._updateValueCallback = null;
 };
 
-function setFile(){
+function setFile(filename){
   return new Promise(function(resolve, reject){
     fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
       if (err) {
@@ -100,6 +101,13 @@ function setFile(){
   });
 }
 
+function wait(ms)
+{
+var d = new Date();
+var d2 = null;
+do { d2 = new Date(); }
+while(d2-d < ms);
+}
 // function sendFile(){
 //   fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
 //     if (err) {
