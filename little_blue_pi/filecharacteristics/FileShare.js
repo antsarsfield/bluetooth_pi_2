@@ -21,25 +21,25 @@ var file = null;
 
 FileShareCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
-  if(!offset) {
+  // if(!offset) {
 
-    var loadAverage = os.loadavg().map(function(currentValue, index, array){
+  //   var loadAverage = os.loadavg().map(function(currentValue, index, array){
 
-      return currentValue.toFixed(3);
-    });
+  //     return currentValue.toFixed(3);
+  //   });
 
-    this._value = new Buffer(JSON.stringify({
-      'oneMin' : loadAverage[0],
-      'fiveMin': loadAverage[1],
-      'fifteenMin': loadAverage[2]
-    }));
-  }
+  //   this._value = new Buffer(JSON.stringify({
+  //     'oneMin' : loadAverage[0],
+  //     'fiveMin': loadAverage[1],
+  //     'fifteenMin': loadAverage[2]
+  //   }));
+  // }
 
-  console.log('LoadAverageCharacteristic - onReadRequest: value = ' +
-    this._value.slice(offset, offset + bleno.mtu).toString()
-  );
+  // console.log('LoadAverageCharacteristic - onReadRequest: value = ' +
+  //   this._value.slice(offset, offset + bleno.mtu).toString()
+  // );
 
-  callback(this.RESULT_SUCCESS, this._value.slice(offset, this._value.length));
+  callback(this.RESULT_SUCCESS, this._value);
 };
 
 FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
@@ -52,11 +52,13 @@ FileShareCharacteristic.prototype.onWriteRequest = function(data, offset, withou
   {
     if(fs_offset < file.length)
     {
-      callback(this.RESULT_SUCCESS);
+      //callback(this.RESULT_SUCCESS);
       console.log(file.slice(fs_offset,fs_offset + bleno.mtu).toString());
-      wait(100);
-      this._updateValueCallback(file.slice(fs_offset,fs_offset + bleno.mtu));
+      //wait(100);
+      this._value = new Buffer(file.slice(fs_offset,fs_offset + bleno.mtu).toString());
+      this._updateValueCallback(this._value);
       fs_offset += bleno.mtu;
+      callback(this.RESULT_SUCCESS);
     }
     else{
 
@@ -90,10 +92,11 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
 
 function setFile(filename){
   return new Promise(function(resolve, reject){
-    fs.readFile('Project/bluetooth_pi_2-master/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
+    fs.readFile('bluetooth_pi_2/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
       if (err) {
           reject(err);
       }
+      fs_offset =0;
       file = data;
       console.log("Got file");
       resolve("Got file");
