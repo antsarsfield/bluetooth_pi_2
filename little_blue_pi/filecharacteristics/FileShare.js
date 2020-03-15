@@ -92,7 +92,7 @@ FileShareCharacteristic.prototype.onUnsubscribe = function() {
 
 function setFile(filename){
   return new Promise(function(resolve, reject){
-    fs.readFile('bluetooth_pi_2/little_blue_pi/filecharacteristics/test.csv','utf8', function (err, data) {
+    fs.readFile('bluetooth_pi_2/little_blue_pi/files/test.csv','utf8', function (err, data) {
       if (err) {
           reject(err);
       }
