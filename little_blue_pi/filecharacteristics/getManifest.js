@@ -65,6 +65,11 @@ getManifestCharacteristic.prototype.onWriteRequest = function(data, offset, with
 
 getManifestCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
   console.log("getManifestCharacteristic - onSubscribe");
+
+  var tree = dirTree("/some/path");
+  console.log(JSON.stringify(tree));
+  this._value = new Buffer(JSON.stringify(tree));
+  //callback(this.RESULT_SUCCESS);
   //console.log('Began sending File');
   this._updateValueCallback = updateValueCallback;
 };
