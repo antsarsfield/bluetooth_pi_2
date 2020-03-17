@@ -1,8 +1,7 @@
 var bleno = require('bleno');
 var os = require('os');
 var util = require('util');
-var fs = require('fs');
-var dirTree = require('directory-tree');
+var pyshell = require('python-shell');
 
 var BlenoCharacteristic = bleno.Characteristic;
 
@@ -16,10 +15,9 @@ var pulseCharacteristic = function() {
   this._value = new Buffer(0);
 };
 
-pulseCharacteristic.prototype.onReadRequest = function(offset, callback) {
-  //return JSON of the file structure of the folder "file" structured like this:
+var py;
 
-  var tree = dirTree("/some/path");
+pulseCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
   if(!offset){
     console.log(JSON.stringify(tree));
@@ -40,17 +38,23 @@ pulseCharacteristic.prototype.onWriteRequest = function(data, offset, withoutRes
   console.log(stringData);
   if(stringData == "_START_")
   {
-    //start pulse code
+    py =  new PythonShell('bpmWrite.py');
     callback(this.RESULT_SUCCESS);
   }
   else if(stringData == "_STOP_")
   {
-    //stop pulse code
+    py.end(function (err,code,signal) {
+      if (err) throw err;
+      console.log('The exit code was: ' + code);
+      console.log('The exit signal was: ' + signal);
+      console.log('finished');
+      console.log('finished');
+    });
     callback(this.RESULT_SUCCESS);
   }
   else
   {
-    //send annoation
+    py.send(stringData);
     callback(this.RESULT_SUCCESS);
   }
 };
