@@ -44,5 +44,5 @@ deleteFilesCharacteristic.prototype.onWriteRequest = function(data, offset, with
 };
 
 
-util.inherits(pulseCharacteristic, BlenoCharacteristic);
-module.exports = pulseCharacteristic;
+util.inherits(deleteFilesCharacteristic, BlenoCharacteristic);
+module.exports = deleteFilesCharacteristic;
