@@ -36,17 +36,19 @@ getManifestCharacteristic.prototype.onReadRequest = function(offset, callback) {
 
 getManifestCharacteristic.prototype.onWriteRequest = function(data, offset, withoutResponse, callback)
 {
+  console.log("recived write request");
   if(!offset)
 	{
   }
   var stringData = data.toString('ascii');
+  console.log(stringData);
   if(stringData == "CONTINUE")
   {
     if(fs_offset < this._value.length)
     {
       console.log(this._value.slice(fs_offset,fs_offset + bleno.mtu).toString());
       //this._value = new Buffer(file.slice(fs_offset,fs_offset + bleno.mtu).toString());
-      this._updateValueCallback(this._value.slice(fs_offset,fs_offset + bleno.mtu).toString());
+      this._updateValueCallback(this._value.slice(fs_offset,fs_offset + bleno.mtu));
       fs_offset += bleno.mtu;
       callback(this.RESULT_SUCCESS);
     }
@@ -56,7 +58,8 @@ getManifestCharacteristic.prototype.onWriteRequest = function(data, offset, with
   }
   else
   {
-    var tree = dirTree("/some/path");
+    fs_offset=0;
+    var tree = dirTree("/home/pi/bluetooth_pi_2-master/little_blue_pi/files");
     console.log(JSON.stringify(tree));
     this._value = new Buffer(JSON.stringify(tree));
     callback(this.RESULT_SUCCESS);
@@ -66,9 +69,9 @@ getManifestCharacteristic.prototype.onWriteRequest = function(data, offset, with
 getManifestCharacteristic.prototype.onSubscribe = function(maxValueSize, updateValueCallback) {
   console.log("getManifestCharacteristic - onSubscribe");
 
-  var tree = dirTree("/some/path");
-  console.log(JSON.stringify(tree));
-  this._value = new Buffer(JSON.stringify(tree));
+  //var tree = dirTree("/some/path");
+  //console.log(JSON.stringify(tree));
+  this._value = new Buffer("");
   //callback(this.RESULT_SUCCESS);
   //console.log('Began sending File');
   this._updateValueCallback = updateValueCallback;
